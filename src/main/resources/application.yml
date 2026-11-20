@@ -1,0 +1,41 @@
+server:
+  port: ${PORT:8082}
+  tomcat:
+    connection-timeout: 20s
+    threads:
+      max: 24
+spring:
+  application:
+    name: relay-transfer
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5434/relay}
+    username: ${DATABASE_USER:relay}
+    password: ${DATABASE_PASSWORD:relay-local}
+    hikari:
+      maximum-pool-size: 12
+      connection-timeout: 5000
+  servlet:
+    multipart:
+      enabled: false
+  jackson:
+    default-property-inclusion: non_null
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+relay:
+  admin-token: ${ADMIN_TOKEN:}
+  data-directory: ${DATA_DIRECTORY:./data}
+  storage: ${STORAGE:local}
+  chunk-size: ${CHUNK_SIZE:8388608}
+  max-file-size: ${MAX_FILE_SIZE:34359738368}
+  max-concurrent-uploads: ${MAX_CONCURRENT_UPLOADS:4}
+  max-open-transfers: ${MAX_OPEN_TRANSFERS:20}
+  expiry-hours: ${EXPIRY_HOURS:24}
+  s3-bucket: ${S3_BUCKET:}
+  s3-region: ${AWS_REGION:us-east-1}
+  s3-endpoint: ${S3_ENDPOINT:}

@@ -1,0 +1,9 @@
+/target/
+/data/
+/.env
+*.log
+*.pid
+.DS_Store
+__pycache__/
+*.pyc
+/node_modules/
