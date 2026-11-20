@@ -3,7 +3,13 @@ services:
   moto:
     image: motoserver/moto:5.2.5
     healthcheck:
-      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:5000/',timeout=2)"]
+      test:
+        [
+          CMD,
+          python,
+          -c,
+          "import urllib.request; urllib.request.urlopen('http://localhost:5000/',timeout=2)",
+        ]
       interval: 3s
       timeout: 3s
       retries: 25

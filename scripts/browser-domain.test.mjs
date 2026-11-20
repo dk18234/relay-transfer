@@ -1,13 +1,87 @@
-import{test}from'node:test';
-import assert from'node:assert/strict';
-import{createHash,randomBytes}from'node:crypto';
-import{Sha256,hashBlob}from'../src/main/resources/static/sha256.mjs';
-import{acceptedBytes,acceptedParts,missingParts,progress,validateFile,escapeHtml,sampleFile,MiB}from'../src/main/resources/static/domain.mjs';
-const native=bytes=>createHash('sha256').update(bytes).digest('hex');
-test('incremental SHA-256 matches native vectors including padding boundaries',()=>{for(const n of[0,1,3,55,56,63,64,65,127,128,1000,1048579]){const bytes=randomBytes(n),sha=new Sha256();for(let i=0;i<n;i+=17)sha.update(bytes.subarray(i,i+17));assert.equal(sha.hex(),native(bytes),'length '+n);}});
-test('Blob hashing is incremental and reports actual progress',async()=>{const b=randomBytes(2*MiB+13),progress=[];assert.equal(await hashBlob(new Blob([b]),(n,total)=>progress.push([n,total])),native(b));assert.equal(progress.length,3);assert.deepEqual(progress.at(-1),[b.length,b.length]);});
-test('resumed sample generation produces the same original bytes',async()=>{const a=sampleFile('a.bin',MiB+37),b=sampleFile('b.bin',MiB+37);assert.equal(await hashBlob(a),await hashBlob(b));assert.equal(a.size,MiB+37);});
-test('accepted progress counts verified receipts rather than attempted bytes',()=>{const t={size:20,parts:[{number:1,size:8,acceptedAt:'now'},{number:2,size:8},{number:3,size:4,acceptedAt:'now'}]};assert.equal(acceptedBytes(t),12);assert.equal(acceptedParts(t),2);assert.equal(progress(t),60);assert.deepEqual(missingParts(t),[2]);});
-test('file reselection requires exact original length and SHA-256',()=>{const t={size:10,expectedSha256:'a'.repeat(64)};assert.doesNotThrow(()=>validateFile(t,{size:10},'a'.repeat(64)));assert.throws(()=>validateFile(t,{size:11},'a'.repeat(64)));assert.throws(()=>validateFile(t,{size:10},'b'.repeat(64)));});
-test('user-controlled dataset names are escaped before HTML rendering',()=>{assert.equal(escapeHtml('<img src=x onerror="alert(1)">'), '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');});
-test('an incremental digest cannot be reused after finalization',()=>{const h=new Sha256();h.update(new Uint8Array([1]));h.hex();assert.throws(()=>h.hex());assert.throws(()=>h.update(new Uint8Array([2])));});
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { createHash, randomBytes } from "node:crypto";
+import { Sha256, hashBlob } from "../src/main/resources/static/sha256.mjs";
+import {
+  acceptedBytes,
+  acceptedParts,
+  missingParts,
+  progress,
+  validateFile,
+  escapeHtml,
+  sampleFile,
+  MiB,
+  hasRejected,
+  label,
+} from "../src/main/resources/static/domain.mjs";
+const native = (bytes) => createHash("sha256").update(bytes).digest("hex");
+test("incremental SHA-256 matches native vectors including padding boundaries", () => {
+  for (const n of [0, 1, 3, 55, 56, 63, 64, 65, 127, 128, 1000, 1048579]) {
+    const bytes = randomBytes(n),
+      sha = new Sha256();
+    for (let i = 0; i < n; i += 17) sha.update(bytes.subarray(i, i + 17));
+    assert.equal(sha.hex(), native(bytes), "length " + n);
+  }
+});
+test("Blob hashing is incremental and reports actual progress", async () => {
+  const b = randomBytes(2 * MiB + 13),
+    progress = [];
+  assert.equal(
+    await hashBlob(new Blob([b]), (n, total) => progress.push([n, total])),
+    native(b),
+  );
+  assert.equal(progress.length, 3);
+  assert.deepEqual(progress.at(-1), [b.length, b.length]);
+});
+test("resumed sample generation produces the same original bytes", async () => {
+  const a = sampleFile("a.bin", MiB + 37),
+    b = sampleFile("b.bin", MiB + 37);
+  assert.equal(await hashBlob(a), await hashBlob(b));
+  assert.equal(a.size, MiB + 37);
+});
+test("accepted progress counts verified receipts rather than attempted bytes", () => {
+  const t = {
+    size: 20,
+    parts: [
+      { number: 1, size: 8, acceptedAt: "now" },
+      { number: 2, size: 8 },
+      { number: 3, size: 4, acceptedAt: "now" },
+    ],
+  };
+  assert.equal(acceptedBytes(t), 12);
+  assert.equal(acceptedParts(t), 2);
+  assert.equal(progress(t), 60);
+  assert.deepEqual(missingParts(t), [2]);
+});
+test("file reselection requires exact original length and SHA-256", () => {
+  const t = { size: 10, expectedSha256: "a".repeat(64) };
+  assert.doesNotThrow(() => validateFile(t, { size: 10 }, "a".repeat(64)));
+  assert.throws(() => validateFile(t, { size: 11 }, "a".repeat(64)));
+  assert.throws(() => validateFile(t, { size: 10 }, "b".repeat(64)));
+});
+test("user-controlled dataset names are escaped before HTML rendering", () => {
+  assert.equal(
+    escapeHtml('<img src=x onerror="alert(1)">'),
+    "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;",
+  );
+});
+test("an incremental digest cannot be reused after finalization", () => {
+  const h = new Sha256();
+  h.update(new Uint8Array([1]));
+  h.hex();
+  assert.throws(() => h.hex());
+  assert.throws(() => h.update(new Uint8Array([2])));
+});
+
+test("rejected pending chunks remain visible until their original bytes are accepted", () => {
+  const transfer = {
+    status: "OPEN",
+    parts: [{ number: 1, size: 10 }],
+    events: [{ type: "CHUNK_REJECTED", part: 1 }],
+  };
+  assert.equal(hasRejected(transfer), true);
+  assert.equal(label(transfer), "Chunk rejected");
+  transfer.parts[0].acceptedAt = "now";
+  assert.equal(hasRejected(transfer), false);
+  assert.equal(label(transfer), "Ready to resume");
+});

@@ -21,11 +21,11 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: "21"
           cache: maven
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: Start the S3 API emulator
         run: |
           pip install 'moto[server,s3]==5.2.5'
@@ -35,7 +35,7 @@ jobs:
         run: ./mvnw -B verify
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - name: Browser hashing and transfer-domain checks
         run: |
           node --test scripts/browser-domain.test.mjs

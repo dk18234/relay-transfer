@@ -9,5 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableConfigurationProperties(RelayProperties.class)
 public class RelayApplication {
-    public static void main(String[] args) { SpringApplication.run(RelayApplication.class, args); }
+  public static void main(String[] args) {
+    SpringApplication.run(RelayApplication.class, args);
+  }
 }
