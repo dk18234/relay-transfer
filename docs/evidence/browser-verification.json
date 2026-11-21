@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "2c5dcc9654b4f9ad37b74a8bc6f16358c0dcc3ab",
+  "publicUrl": "https://dk18234.github.io/relay-transfer/",
+  "checks": {
+    "partialProgressAfterReload": "8 of 24 chunks preserved",
+    "resume": "24 of 24 accepted; full SHA-256 matched",
+    "corruption": "one changed byte rejected; zero accepted bytes",
+    "corruptionRetry": "full SHA-256 matched after original bytes retried",
+    "chunkInspector": "accepted digest and byte length displayed",
+    "filtering": "dataset search combined with needs-attention filter",
+    "receiptExport": "valid JSON; status COMPLETED",
+    "verifiedDownload": {
+      "bytes": 4194304,
+      "sha256": "a2c6edea119d66cc4af52d37ab6c64dafc248375f13ad3c47f7a9458b5b40821",
+      "matchesManifest": true
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 844,
+      "documentScrollWidth": 390
+    }
+  },
+  "runtimeBoundary": "Independent JavaScript/IndexedDB browser sandbox; not the Java backend",
+  "downloadTestNote": "Local browser automation could not retrieve a Blob download path; export and file bytes verified in the cloud test browser instead."
+}

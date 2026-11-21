@@ -1,0 +1,22 @@
+{
+  "storage": "s3",
+  "completedAt": "2026-11-20T23:58:01.677042858Z",
+  "sourceBytes": 25165824,
+  "serverMaxHeapBytes": 100663296,
+  "observedPeakRssKiB": 271608,
+  "chunkSize": 8388608,
+  "parts": 3,
+  "acceptedBeforeRestart": 2,
+  "restartedProcesses": 2,
+  "corruptPartRejected": true,
+  "missingChunksUploadedAfterRestart": 1,
+  "fullSha256": "ea785f8ff3663904ed4dabd5a553dde85d863a6e70dc265ff211883cbbd7df1d",
+  "downloadSha256": "ea785f8ff3663904ed4dabd5a553dde85d863a6e70dc265ff211883cbbd7df1d",
+  "elapsedSeconds": 13.94,
+  "s3Scope": "Moto S3 API emulator; not an AWS benchmark",
+  "provenance": {
+    "sourceCommit": "2c5dcc9654b4f9ad37b74a8bc6f16358c0dcc3ab",
+    "workflowRun": "https://github.com/dk18234/relay-transfer/actions/runs/44840430587",
+    "jobId": 136647144182
+  }
+}

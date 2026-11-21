@@ -10,6 +10,8 @@ Relay transfers synthetic research datasets in independently verified chunks. Po
 
 The public sandbox runs actual hashing and byte storage in your browser, using IndexedDB. It is a separate JavaScript implementation with a 64 MiB file limit; no Java server, PostgreSQL, or S3 runs on GitHub Pages. The same dashboard connects to the full backend when served by the local Java application.
 
+![Relay transfer dashboard](docs/evidence/relay-desktop.jpg)
+
 ## What is implemented
 
 - Streaming ingestion with a 64 KiB copy buffer and four bounded server upload slots.

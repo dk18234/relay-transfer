@@ -1,0 +1,22 @@
+{
+  "storage": "local",
+  "completedAt": "2026-11-20T23:58:13.511143442Z",
+  "sourceBytes": 134217728,
+  "serverMaxHeapBytes": 100663296,
+  "observedPeakRssKiB": 240320,
+  "chunkSize": 8388608,
+  "parts": 16,
+  "acceptedBeforeRestart": 2,
+  "restartedProcesses": 2,
+  "corruptPartRejected": true,
+  "missingChunksUploadedAfterRestart": 14,
+  "fullSha256": "5f4b45305a3f655595027a2d602651c69e934d891b903135ef658fa6a0b8494b",
+  "downloadSha256": "5f4b45305a3f655595027a2d602651c69e934d891b903135ef658fa6a0b8494b",
+  "elapsedSeconds": 11.64,
+  "s3Scope": "not used",
+  "provenance": {
+    "sourceCommit": "2c5dcc9654b4f9ad37b74a8bc6f16358c0dcc3ab",
+    "workflowRun": "https://github.com/dk18234/relay-transfer/actions/runs/44840430587",
+    "jobId": 136647144182
+  }
+}
